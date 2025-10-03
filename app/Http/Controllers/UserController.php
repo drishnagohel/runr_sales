@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+
+use function Laravel\Prompts\password;
 
 class UserController extends Controller
 {
@@ -73,15 +76,43 @@ class UserController extends Controller
     }
 
 
-    public function updatePassword(Request $request)
-    {
-        $request->validate([
-            //
-        ]);
-        $user = User::find($request->id);
-        $user->password = Hash::make($request->input('password'));
-        $user->save();
+    // public function updatePassword(Request $request)
+    // {
+    //     $valid = Validator::make($request->all(), [
+    //         "user_id" => "required",
+    //     ]);
 
-        return response()->json(['status' => 200, 'message' => 'Password Updated.']);
+    //     $user = User::find($request->user_id);
+    //     $user->password = Hash::make($request->input('password'));
+    //     $user->save();
+
+    //     return response()->json(['status' => 200, 'message' => 'Password Updated.']);
+    // }
+
+
+    public function updatePassword(Request $request)
+{
+    $valid = Validator::make($request->all(), [
+        'user_id' => 'required|exists:tbl_user,user_id',
+        'password' => 'required|min:6',
+    ]);
+    if ($valid->fails()) {
+        return response()->json(['status' => 400, 'error' => $valid->errors()], 400);
+    } else {
+        $user = User::find($request->user_id);
+
+        if (!$user) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'User not found'
+            ]);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
     }
+    return response()->json(['status' => 200, 'message' => 'Password updated successfully']);
+}
+
+
 }
