@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
@@ -31,3 +32,8 @@ Route::post('/addcreator', [CreatorController::class, 'addcreator']);
 Route::post('/getallcreator', [CreatorController::class, 'getallcreator']);
 Route::post('/updatecreator', [CreatorController::class, 'updatecreator']);
 Route::post('/deletecreator', [CreatorController::class, 'deletecreator']);
+
+Route::post('/addclient', [ClientController::class, 'addclient']);
+Route::post('/getallclient', [ClientController::class, 'getallclient']);
+Route::post('/updateclient', [ClientController::class, 'updateclient']);
+Route::post('/deleteclient', [ClientController::class, 'deleteclient']);
