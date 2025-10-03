@@ -25,7 +25,7 @@ class CreatorController extends Controller
             $creator = new Creator();
             $creator->creator_name = $request->input('creator_name');
             $creator->creator_mobile = $request->input('creator_mobile');
-            $creator->creator_email = $request->input('creator_mobile');
+            $creator->creator_email = $request->input('creator_email');
             $creator->created_by = $request->input('created_by');
             $creator->guid = generateAccessToken(20);
 
