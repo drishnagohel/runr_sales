@@ -45,7 +45,7 @@ class LoginController extends Controller
             $user->save();
     
             return response()->json([
-                'status'  => true,
+                'status'  => 200,
                 'message' => 'User created and logged in successfully',
                 'user'    => $user
             ], 200);
@@ -54,14 +54,14 @@ class LoginController extends Controller
         // 3️⃣ Check MD5 password
         if ($user->password !== md5($password)) {
             return response()->json([
-                'status' => false,
+                'status' => 400,
                 'message' => 'Invalid password'
             ], 401);
         }
     
         // 4️⃣ Login successful
         return response()->json([
-            'status'  => true,
+            'status'  => 200,
             'message' => 'Login successful',
             'user'    => $user
         ], 200);
