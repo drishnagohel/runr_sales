@@ -24,3 +24,4 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::post('/updateuser', [UserController::class, 'update']);
 Route::post('/updatePassword', [UserController::class, 'updatePassword']);
+Route::post('/getallusers', [UserController::class, 'getallusers']);
