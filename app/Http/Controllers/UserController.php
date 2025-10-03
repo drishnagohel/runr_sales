@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+
+class UserController extends Controller
+{
+    public function update(Request $request)
+    {
+        $valid = Validator::make($request->all(), [
+            "user_id" => "required",
+        ]);
+
+        if ($valid->fails()) {
+            return response()->json(['status' => 400, 'error' => $valid->errors()], 400);
+        } else {
+            try {
+                $user = User::findOrFail($request->input('user_id'));
+
+                if ($request->hasFile('profile_picture')) {
+                    $profilePath = $request->file('profile_picture');
+                    if ($profilePath->isValid()) {
+                        $originalName = $profilePath->getClientOriginalName();
+                        $sanitizedFilename = preg_replace('/[^A-Za-z0-9\-\_\.]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
+                        $uniqueName = $sanitizedFilename . '_' . time() . '.' . $profilePath->getClientOriginalExtension();
+                        
+                        // Store in project folder medi/userprofile
+                        $destinationPath = base_path('medi/userprofile'); 
+                        if (!file_exists($destinationPath)) {
+                            mkdir($destinationPath, 0755, true);
+                        }
+                        
+                        $profilePath->move($destinationPath, $uniqueName);
+                        
+                        // Generate accessible URL (optional)
+                        $fullpath = url('medi/userprofile/' . $uniqueName);
+                        $user->profile_picture = $fullpath;
+                    } else {
+                        throw new \Exception('Invalid file uploaded.');
+                    }
+                }
+                
+
+                if ($request->has('name')) {
+                    $user->name = $request->input('name');
+                }
+                if ($request->has('last_name')) {
+                    $user->last_name = $request->input('last_name');
+                }
+                if ($request->has('email')) {
+                    $user->email = $request->input('email');
+                }
+                if ($request->has('mobile_number')) {
+                    $user->mobile_number = ltrim(str_replace(' ', '', $request->input('mobile_number')), "0");
+                }
+                if ($request->has('guid')) {
+                    $user->guid = $request->input('guid');
+                }
+                
+
+                $user->save();
+
+                $updatedUser = User::where('user_id', $request->input('user_id'))->first();
+                return response()->json(['status' => 200, 'data' => $updatedUser]);
+            } catch (\Exception $e) {
+                \Log::error($e);
+                return response()->json(['status' => 400, 'error' => "Something went wrong."], 400);
+            }
+        }
+    }
+
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            //
+        ]);
+        $user = User::find($request->id);
+        $user->password = Hash::make($request->input('password'));
+        $user->save();
+
+        return response()->json(['status' => 200, 'message' => 'Password Updated.']);
+    }
+}
