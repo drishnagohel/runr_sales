@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -25,3 +26,8 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/updateuser', [UserController::class, 'update']);
 Route::post('/updatePassword', [UserController::class, 'updatePassword']);
 Route::post('/getallusers', [UserController::class, 'getallusers']);
+
+Route::post('/addcreator', [CreatorController::class, 'addcreator']);
+Route::post('/getallcreator', [CreatorController::class, 'getallcreator']);
+Route::post('/updatecreator', [CreatorController::class, 'updatecreator']);
+Route::post('/deletecreator', [CreatorController::class, 'deletecreator']);
