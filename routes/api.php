@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\SalepersonController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -37,3 +38,8 @@ Route::post('/addclient', [ClientController::class, 'addclient']);
 Route::post('/getallclient', [ClientController::class, 'getallclient']);
 Route::post('/updateclient', [ClientController::class, 'updateclient']);
 Route::post('/deleteclient', [ClientController::class, 'deleteclient']);
+
+Route::post('/addsalesperson', [SalepersonController::class, 'addsalesperson']);
+Route::post('/updatesalesperson', [SalepersonController::class, 'updatesalesperson']);
+Route::post('/getallsalesperson', [SalepersonController::class, 'getallsalesperson']);
+Route::post('/deletesalesperson', [SalepersonController::class, 'deletesalesperson']);
