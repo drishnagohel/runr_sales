@@ -45,7 +45,7 @@ class Sales extends Model
             $searchTerm = $data['search'];
             $query = $query->where(function ($query) use ($searchTerm) {
                 $query->orWhere('sm.salesmanger_name', 'like', '%' . $searchTerm . '%');
-                $query->orWhere('sm.salesmanger_name', 'like', '%' . $searchTerm . '%');
+                $query->orWhere('cr.creator_name', 'like', '%' . $searchTerm . '%');
                 $query->orWhere('sp.person_name', 'like', '%' . $searchTerm . '%');
                 $query->orWhere('cl.client_name', 'like', '%' . $searchTerm . '%');
             });
