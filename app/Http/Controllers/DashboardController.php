@@ -153,7 +153,7 @@ class DashboardController extends Controller
         $filter = $request->input('filter');
 
         $query = DB::table('tbl_salesperson')
-            ->select('person_name', DB::raw('COUNT(*) as total'))
+            ->select('salesmanger_name', DB::raw('COUNT(*) as total'))
             ->where('status', 1);
 
         // 🕒 Apply Date Filter
@@ -162,7 +162,7 @@ class DashboardController extends Controller
         }
 
         $clients = $query
-            ->groupBy('person_name')
+            ->groupBy('salesmanger_name')
             ->orderBy('total', 'desc')
             ->get();
 
