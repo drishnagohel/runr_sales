@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CreatorController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SalepersonController;
 use App\Http\Controllers\SalesController;
@@ -55,3 +56,8 @@ Route::post('/addsales', [SalesController::class, 'addsales']);
 Route::post('/getallsales', [SalesController::class, 'getallsales']);
 Route::post('/updatesales', [SalesController::class, 'updatesales']);
 Route::post('/deletesales', [SalesController::class, 'deletesales']);
+
+
+Route::post('/getClientChartData', [DashboardController::class, 'getClientChartData']);
+Route::post('/getCreatorChartData', [DashboardController::class, 'getCreatorChartData']);
+Route::post('/getSalespersonChartData', [DashboardController::class, 'getSalespersonChartData']);
