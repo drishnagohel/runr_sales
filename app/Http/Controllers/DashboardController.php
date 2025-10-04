@@ -8,17 +8,19 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
+
     public function getClientChartData()
     {
-        // Group clients by creation date
+        // Fetch total clients grouped by client_name
         $clients = DB::table('tbl_client')
-            ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as total'))
-            ->groupBy(DB::raw('DATE(created_at)'))
-            ->orderBy(DB::raw('DATE(created_at)'), 'asc')
+            ->select('client_name', DB::raw('COUNT(*) as total'))
+            ->groupBy('client_name')
+            ->orderBy('total', 'desc')
+            ->where('status', 1)
             ->get();
 
-        // Format for chart use (pie chart expects labels + data)
-        $labels = $clients->pluck('date');
+        // Prepare data for the chart
+        $labels = $clients->pluck('client_name');
         $data = $clients->pluck('total');
 
         return response()->json([
@@ -29,15 +31,16 @@ class DashboardController extends Controller
 
     public function getCreatorChartData()
     {
-        // Group clients by creation date
+        // Fetch total clients grouped by creator_name
         $clients = DB::table('tbl_creator')
-            ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as total'))
-            ->groupBy(DB::raw('DATE(created_at)'))
-            ->orderBy(DB::raw('DATE(created_at)'), 'asc')
+            ->select('creator_name', DB::raw('COUNT(*) as total'))
+            ->groupBy('creator_name')
+            ->orderBy('total', 'desc')
+            ->where('status', 1)
             ->get();
 
-        // Format for chart use (pie chart expects labels + data)
-        $labels = $clients->pluck('date');
+        //  Prepare data for the chart
+        $labels = $clients->pluck('creator_name');
         $data = $clients->pluck('total');
 
         return response()->json([
@@ -48,15 +51,16 @@ class DashboardController extends Controller
 
     public function getSalespersonChartData()
     {
-        // Group clients by creation date
+        // Fetch total clients grouped by person_name
         $clients = DB::table('tbl_salesperson')
-            ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as total'))
-            ->groupBy(DB::raw('DATE(created_at)'))
-            ->orderBy(DB::raw('DATE(created_at)'), 'asc')
+            ->select('person_name', DB::raw('COUNT(*) as total'))
+            ->groupBy('person_name')
+            ->orderBy('total', 'desc')
+            ->where('status', 1)
             ->get();
 
-        // Format for chart use (pie chart expects labels + data)
-        $labels = $clients->pluck('date');
+        //  Prepare data for the chart
+        $labels = $clients->pluck('person_name');
         $data = $clients->pluck('total');
 
         return response()->json([
