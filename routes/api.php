@@ -4,6 +4,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SalepersonController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SalesmanagerController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -49,3 +50,8 @@ Route::post('/addsalesmanager', [SalesmanagerController::class, 'addsalesmanager
 Route::post('/getallsalesmanager', [SalesmanagerController::class, 'getallsalesmanager']);
 Route::post('/updatesalesmanager', [SalesmanagerController::class, 'updatesalesmanager']);
 Route::post('/deletesalesmanager', [SalesmanagerController::class, 'deletesalesmanager']);
+
+Route::post('/addsales', [SalesController::class, 'addsales']);
+Route::post('/getallsales', [SalesController::class, 'getallsales']);
+Route::post('/updatesales', [SalesController::class, 'updatesales']);
+Route::post('/deletesales', [SalesController::class, 'deletesales']);
