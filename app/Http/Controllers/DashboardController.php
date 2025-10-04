@@ -175,4 +175,56 @@ class DashboardController extends Controller
             'data' => $data,
         ]);
     }
+
+
+    // public function getSalesChartData(Request $request)
+    // {
+    //     $filter = $request->input('filter'); // e.g., today, thisweek, last7days, etc.
+
+    //     $query = DB::table('tbl_sales_details')
+    //         ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as total'))
+    //         ->where('status', 1);
+
+    //     // Apply date filter if provided
+    //     if ($filter) {
+    //         $query = $this->applyDateFilter($query, $filter, 'created_at');
+    //     }
+
+    //     // Group by date and get count
+    //     $sales = $query
+    //         ->groupBy(DB::raw('DATE(created_at)'))
+    //         ->orderBy(DB::raw('DATE(created_at)'), 'asc')
+    //         ->get();
+
+    //     return response()->json([
+    //         'labels' => $sales->pluck('date'), // Dates as labels
+    //         'data' => $sales->pluck('total'),  // Count of sales per date
+    //     ]);
+    // }
+
+
+    public function getSalesChartData(Request $request)
+    {
+        $filter = $request->input('filter'); // e.g., today, thisweek, last7days, etc.
+
+        $query = DB::table('tbl_sales_details')
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as total'))
+            ->where('status', 1);
+
+        // Apply date filter if provided
+        if ($filter) {
+            $query = $this->applyDateFilter($query, $filter, 'created_at');
+        }
+
+        // Group by date and get count
+        $sales = $query
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy(DB::raw('DATE(created_at)'), 'asc')
+            ->get();
+
+        return response()->json([
+            'labels' => $sales->pluck('date'), // Dates as labels
+            'data' => $sales->pluck('total'),  // Count of sales per date
+        ]);
+    }
 }
