@@ -152,7 +152,7 @@ class DashboardController extends Controller
     {
         $filter = $request->input('filter');
 
-        $query = DB::table('tbl_salesperson')
+        $query = DB::table('tbl_salesmanger')
             ->select('salesmanger_name', DB::raw('COUNT(*) as total'))
             ->where('status', 1);
 
