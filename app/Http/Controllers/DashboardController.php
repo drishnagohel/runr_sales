@@ -9,15 +9,78 @@ use Carbon\Carbon;
 class DashboardController extends Controller
 {
 
-    public function getClientChartData()
+    /**
+ * 🔁 Reusable helper function to apply date filters
+ */
+    private function applyDateFilter($query, $filter, $column = 'created_at')
     {
-        // Fetch total clients grouped by client_name
-        $clients = DB::table('tbl_client')
+        $today = now();
+
+        switch ($filter) {
+            case 'today':
+                $query->whereDate($column, $today);
+                break;
+
+            case 'yesterday':
+                $query->whereDate($column, $today->copy()->subDay());
+                break;
+
+            case 'thisweek':
+                $query->whereBetween($column, [now()->startOfWeek(), now()->endOfWeek()]);
+                break;
+
+            case 'last7days':
+                $query->whereBetween($column, [now()->subDays(6)->startOfDay(), now()->endOfDay()]);
+                break;
+
+            case 'lastweek':
+                $query->whereBetween($column, [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()]);
+                break;
+
+            case 'thismonth':
+                $query->whereMonth($column, now()->month)->whereYear($column, now()->year);
+                break;
+
+            case 'last28days':
+                $query->whereBetween($column, [now()->subDays(27)->startOfDay(), now()->endOfDay()]);
+                break;
+
+            case 'lastmonth':
+                $query->whereMonth($column, now()->subMonth()->month)
+                    ->whereYear($column, now()->subMonth()->year);
+                break;
+
+            case 'thisyear':
+                $query->whereYear($column, now()->year);
+                break;
+
+            case 'lastyear':
+                $query->whereYear($column, now()->subYear()->year);
+                break;
+        }
+
+        return $query;
+    }
+
+
+    public function getClientChartData(Request $request)
+    {
+        $filter = $request->input('filter'); 
+
+        $query = DB::table('tbl_client')
             ->select('client_name', DB::raw('COUNT(*) as total'))
+            ->where('status', 1);
+
+        // 🕒 Apply Date Filter
+        if ($filter) {
+            $query = $this->applyDateFilter($query, $filter, 'created_at');
+        }
+
+        $clients = $query
             ->groupBy('client_name')
             ->orderBy('total', 'desc')
-            ->where('status', 1)
             ->get();
+
 
         // Prepare data for the chart
         $labels = $clients->pluck('client_name');
@@ -29,14 +92,22 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function getCreatorChartData()
+    public function getCreatorChartData(Request $request)
     {
-        // Fetch total clients grouped by creator_name
-        $clients = DB::table('tbl_creator')
+        $filter = $request->input('filter');
+
+        $query = DB::table('tbl_creator')
             ->select('creator_name', DB::raw('COUNT(*) as total'))
+            ->where('status', 1);
+
+        // 🕒 Apply Date Filter
+        if ($filter) {
+            $query = $this->applyDateFilter($query, $filter, 'created_at');
+        }
+
+        $clients = $query
             ->groupBy('creator_name')
             ->orderBy('total', 'desc')
-            ->where('status', 1)
             ->get();
 
         //  Prepare data for the chart
@@ -49,18 +120,54 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function getSalespersonChartData()
+    public function getSalespersonChartData(Request $request)
     {
-        // Fetch total clients grouped by person_name
-        $clients = DB::table('tbl_salesperson')
+        $filter = $request->input('filter'); 
+
+        $query = DB::table('tbl_salesperson')
             ->select('person_name', DB::raw('COUNT(*) as total'))
+            ->where('status', 1);
+
+        // 🕒 Apply Date Filter
+        if ($filter) {
+            $query = $this->applyDateFilter($query, $filter, 'created_at');
+        }
+
+        $clients = $query
             ->groupBy('person_name')
             ->orderBy('total', 'desc')
-            ->where('status', 1)
             ->get();
 
         //  Prepare data for the chart
         $labels = $clients->pluck('person_name');
+        $data = $clients->pluck('total');
+
+        return response()->json([
+            'labels' => $labels,
+            'data' => $data,
+        ]);
+    }
+
+    public function getSalesmanagerChartData(Request $request)
+    {
+        $filter = $request->input('filter');
+
+        $query = DB::table('tbl_salesperson')
+            ->select('person_name', DB::raw('COUNT(*) as total'))
+            ->where('status', 1);
+
+        // 🕒 Apply Date Filter
+        if ($filter) {
+            $query = $this->applyDateFilter($query, $filter, 'created_at');
+        }
+
+        $clients = $query
+            ->groupBy('person_name')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        //  Prepare data for the chart
+        $labels = $clients->pluck('salesmanger_name');
         $data = $clients->pluck('total');
 
         return response()->json([

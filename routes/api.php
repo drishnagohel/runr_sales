@@ -61,3 +61,4 @@ Route::post('/deletesales', [SalesController::class, 'deletesales']);
 Route::post('/getClientChartData', [DashboardController::class, 'getClientChartData']);
 Route::post('/getCreatorChartData', [DashboardController::class, 'getCreatorChartData']);
 Route::post('/getSalespersonChartData', [DashboardController::class, 'getSalespersonChartData']);
+Route::post('/getSalesmanagerChartData', [DashboardController::class, 'getSalesmanagerChartData']);
