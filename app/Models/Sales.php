@@ -17,6 +17,7 @@ class Sales extends Model
         'sales_person',
         'creator',
         'smm',
+        'client',
         'caption',
         'created_by',
         'updated_by',

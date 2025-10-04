@@ -29,6 +29,7 @@ class SalesController extends Controller
             $sales->sales_person = $request->input('sales_person');
             $sales->creator = $request->input('creator');
             $sales->smm = $request->input('smm');
+            $sales->client = $request->input('client');
             $sales->caption = $request->input('caption');
             $sales->created_by = $request->input('created_by');
             $sales->guid = generateAccessToken(20);

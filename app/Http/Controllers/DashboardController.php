@@ -179,7 +179,7 @@ class DashboardController extends Controller
 
     // public function getSalesChartData(Request $request)
     // {
-    //     $filter = $request->input('filter'); // e.g., today, thisweek, last7days, etc.
+    //     $filter = $request->input('filter'); 
 
     //     $query = DB::table('tbl_sales_details')
     //         ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as total'))
@@ -205,7 +205,7 @@ class DashboardController extends Controller
 
     public function getSalesChartData(Request $request)
     {
-        $filter = $request->input('filter'); // e.g., today, thisweek, last7days, etc.
+        $filter = $request->input('filter'); 
 
         $query = DB::table('tbl_sales_details')
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as total'))
