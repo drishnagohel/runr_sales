@@ -32,7 +32,12 @@ class Salesmanager extends Model
         if (array_key_exists('salesmanger_id', $data) && isset($data['salesmanger_id'])) {
             $query = $query->where('sm.salesmanger_id', '=', $data['salesmanger_id']);
         }
-
+        if (array_key_exists('search', $data) && isset($data['search'])) {
+            $searchTerm = $data['search'];
+            $query = $query->where(function ($query) use ($searchTerm) {
+                $query->orWhere('sm.salesmanger_name', 'like', '%' . $searchTerm . '%');
+            });
+        }
         if (array_key_exists('from_date', $data) && isset($data['from_date']) && array_key_exists('to_date', $data) && isset($data['to_date'])) {
             $start = date("Y-m-d", strtotime($data['from_date']));
             $end = date("Y-m-d", strtotime($data['to_date'] . "+1 day"));

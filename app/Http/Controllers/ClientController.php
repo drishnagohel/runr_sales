@@ -70,6 +70,9 @@ class ClientController extends Controller
             if ($request->has('client_id') && $request->input('client_id') != "") {
                 $data['client_id'] = $request->input('client_id');
             }
+            if ($request->has('client_name') && $request->input('client_name') != "") {
+                $data['client_name'] = $request->input('client_name');
+            }
 
             if ($request->has('sortby') && $request->input('sortby') != "") {
                 $data['sortby'] = $request->input('sortby');

@@ -29,14 +29,26 @@ class Sales extends Model
     public static function getsales($data)
     {
 
-        $query = DB::table('tbl_sales_details as sd')->select('sd.*', 'u.name as createdby_fname', 'u.last_name as createdby_lname', 'us.name as updatedby_fname', 'us.last_name as updatedby_lname')
+        $query = DB::table('tbl_sales_details as sd')->select('sd.*','cr.creator_name','sm.salesmanger_name','sp.person_name','cl.client_name','u.name as createdby_fname', 'u.last_name as createdby_lname', 'us.name as updatedby_fname', 'us.last_name as updatedby_lname')
             ->leftjoin('tbl_user as u', 'sd.created_by', '=', 'u.user_id')
-            ->leftjoin('tbl_user as us', 'sd.updated_by', '=', 'us.user_id');
+            ->leftjoin('tbl_user as us', 'sd.updated_by', '=', 'us.user_id')
+            ->leftjoin('tbl_creator as cr', 'cr.creator_id', '=', 'sd.creator')
+            ->leftjoin('tbl_salesmanger as sm', 'sm.salesmanger_id', '=', 'sd.smm')
+            ->leftjoin('tbl_salesperson as sp', 'sp.person_id', '=', 'sd.sales_person')
+            ->leftjoin('tbl_client as cl', 'cl.client_id', '=', 'sd.client');
 
         if (array_key_exists('sales_details_id', $data) && isset($data['sales_details_id'])) {
             $query = $query->where('sd.sales_details_id', '=', $data['sales_details_id']);
         }
-
+        if (array_key_exists('search', $data) && isset($data['search'])) {
+            $searchTerm = $data['search'];
+            $query = $query->where(function ($query) use ($searchTerm) {
+                $query->orWhere('sm.salesmanger_name', 'like', '%' . $searchTerm . '%');
+                $query->orWhere('sm.salesmanger_name', 'like', '%' . $searchTerm . '%');
+                $query->orWhere('sp.person_name', 'like', '%' . $searchTerm . '%');
+                $query->orWhere('cl.client_name', 'like', '%' . $searchTerm . '%');
+            });
+        }
         if (array_key_exists('from_date', $data) && isset($data['from_date']) && array_key_exists('to_date', $data) && isset($data['to_date'])) {
             $start = date("Y-m-d", strtotime($data['from_date']));
             $end = date("Y-m-d", strtotime($data['to_date'] . "+1 day"));

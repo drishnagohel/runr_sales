@@ -70,6 +70,9 @@ class CreatorController extends Controller
             if ($request->has('creator_id') && $request->input('creator_id') != "") {
                 $data['creator_id'] = $request->input('creator_id');
             }
+            if ($request->has('search') && $request->input('search') != "") {
+                $data['search'] = $request->input('search');
+            }
 
             if ($request->has('sortby') && $request->input('sortby') != "") {
                 $data['sortby'] = $request->input('sortby');

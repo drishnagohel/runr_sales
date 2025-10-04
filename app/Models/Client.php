@@ -33,6 +33,12 @@ class Client extends Model
             $query = $query->where('c.client_id', '=', $data['client_id']);
         }
 
+        if (array_key_exists('search', $data) && isset($data['search'])) {
+            $searchTerm = $data['search'];
+            $query = $query->where(function ($query) use ($searchTerm) {
+                $query->orWhere('c.client_name', 'like', '%' . $searchTerm . '%');
+            });
+        }
         if (array_key_exists('from_date', $data) && isset($data['from_date']) && array_key_exists('to_date', $data) && isset($data['to_date'])) {
             $start = date("Y-m-d", strtotime($data['from_date']));
             $end = date("Y-m-d", strtotime($data['to_date'] . "+1 day"));
