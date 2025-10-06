@@ -39,6 +39,24 @@ class ClientController extends Controller
         }
     }
 
+    public function getallclientselect2(Request $request){
+        $search = $request->search;
+        if($search == ''){
+            $clientnamelist = Client::orderby('client_name','asc')->select('client_id','client_name')->paginate(8);
+        } else {
+            $clientnamelist = Client::orderby('client_name','asc')->select('client_id','client_name')->where('client_name', 'like', '%' .$search . '%')->paginate(8);
+        }
+
+        $response = array();
+        foreach($clientnamelist as $postcategory){
+            $response[] = array(
+                "id" => $postcategory->client_id,
+                "text" => $postcategory->client_name
+            );
+        }
+        return response()->json($response);
+    }
+    
     public function getallclient(Request $request)
     {
 

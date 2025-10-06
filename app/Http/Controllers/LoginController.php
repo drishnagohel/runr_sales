@@ -55,7 +55,7 @@ class LoginController extends Controller
         if ($user->password !== md5($password)) {
             return response()->json([
                 'status' => 400,
-                'message' => 'Invalid password'
+                'message' => 'Invalid email or password'
             ], 401);
         }
     
