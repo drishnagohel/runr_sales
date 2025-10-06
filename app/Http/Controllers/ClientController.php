@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Client;
+use Illuminate\Support\Facades\Log;
 
 class ClientController extends Controller
 {
@@ -39,21 +40,69 @@ class ClientController extends Controller
         }
     }
 
-    public function getallclientselect2(Request $request){
-        $search = $request->search;
-        if($search == ''){
-            $clientnamelist = Client::orderby('client_name','asc')->select('client_id','client_name')->paginate(8);
-        } else {
-            $clientnamelist = Client::orderby('client_name','asc')->select('client_id','client_name')->where('client_name', 'like', '%' .$search . '%')->paginate(8);
+    // public function getallclientselect2(Request $request){
+    //     $search = $request->search;
+    //     if($search == ''){
+    //         $clientnamelist = Client::orderby('client_name','asc')->select('client_id','client_name')->paginate(8);
+    //     } else {
+    //         $clientnamelist = Client::orderby('client_name','asc')->select('client_id','client_name')->where('client_name', 'like', '%' .$search . '%')->paginate(8);
+    //     }
+
+    //     $response = array();
+    //     foreach($clientnamelist as $postcategory){
+    //         $response[] = array(
+    //             "id" => $postcategory->client_id,
+    //             "text" => $postcategory->client_name
+    //         );
+    //     }
+    //     return response()->json($response);
+    // }
+
+    public function getallclientselect2(Request $request)
+    {
+        $search = trim($request->search);
+        Log::info("Search term: " . $search);
+
+        // Get matching Clients based on the search term
+        $clientlist = Client::orderBy('client_name', 'asc')
+            ->select('client_id', 'client_name')
+            ->where('client_name', 'like', '%' . $search . '%')
+            ->where('status', 1)
+            ->limit(100)
+            ->get();
+
+        Log::info("Client count: " . $clientlist->count());
+
+        $response = [];
+
+        // Populate response with existing Clients
+        foreach ($clientlist as $client) {
+            $response[] = [
+                "id" => $client->client_id,
+                "text" => $client->client_name,
+            ];
         }
 
-        $response = array();
-        foreach($clientnamelist as $postcategory){
-            $response[] = array(
-                "id" => $postcategory->client_id,
-                "text" => $postcategory->client_name
-            );
+        // Check if the search term exists in the database
+        $existing = Client::whereRaw('LOWER(client_name) = ?', [strtolower($search)])->first();
+        Log::info("Does exact '$search' exist? " . ($existing ? 'Yes' : 'No'));
+
+        // If no matching Client exists and the search term is long enough, add a new Client
+        if (!$existing && strlen($search) >= 3) {
+            $newClient = Client::create([
+                'client_name' => $search,
+                'guid' => generateAccessToken(20),
+            ]);
+
+            $response[] = [
+                "id" => $newClient->client_id, // ✅ return correct ID
+                "text" => $newClient->client_name,
+            ];
+
+            Log::info("Inserted new Client: " . $search);
         }
+        Log::info("Response: ", $response);
+
         return response()->json($response);
     }
     
