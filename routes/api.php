@@ -41,6 +41,7 @@ Route::post('/addclient', [ClientController::class, 'addclient']);
 Route::post('/getallclient', [ClientController::class, 'getallclient']);
 Route::post('/updateclient', [ClientController::class, 'updateclient']);
 Route::post('/deleteclient', [ClientController::class, 'deleteclient']);
+Route::post('/getallclientselect2', [ClientController::class, 'getallclientselect2']);
 
 Route::post('/addsalesperson', [SalepersonController::class, 'addsalesperson']);
 Route::post('/updatesalesperson', [SalepersonController::class, 'updatesalesperson']);
